@@ -1,0 +1,27 @@
+﻿@using WebApplication1.Models
+@{
+    List<EmployeeTime> employees = (List<EmployeeTime>)ViewData["EmployeesTimes"];
+}
+<table style='border: 2px solid black'>
+    <tr>
+        <th>Employee Name</th>
+        <th>Work Hours</th>
+    </tr>
+    @foreach (EmployeeTime item in employees)
+    {
+        if (item.Ts.TotalHours < 100)
+        {
+            <tr style="background-color: red">
+                <td>@item.Name</td>
+                <td>@item.Ts.TotalHours</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Ts.TotalHours</td>
+            </tr>
+        }
+    }
+</table>
