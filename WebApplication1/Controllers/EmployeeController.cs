@@ -61,7 +61,52 @@ namespace WebApplication1.Controllers
                     employeeTimes.Sort((x, y) => y.Ts.CompareTo(x.Ts));
                     ViewData["EmployeesTimes"] = employeeTimes;
 
-                    
+                    //Tast No.2 PNG Pie graph
+                    foreach (EmployeeTime et in employeeTimes)
+                    {
+                        totalHours += (int)et.Ts.TotalHours;
+                    }
+                    var pathPNG = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\employees.png";
+
+                    int width = 700;
+                    int height = 500;
+                    Bitmap image = new Bitmap(width, height);
+
+                    Graphics graphics = Graphics.FromImage(image);
+
+                    Color[] colors = { Color.Red, Color.Blue, Color.Black, Color.Violet, Color.Orange, Color.Yellow, Color.Green, Color.Cyan, Color.Brown, Color.Crimson, Color.Gold };
+
+                    int i = 0;
+                    float movingAngle = 0;
+                    int rectLegendX = 500;
+                    int rectLegendY = 100;
+                    Font arial = new Font("Arial", 10, FontStyle.Regular);
+
+                    foreach (EmployeeTime et in employeeTimes)
+                    {
+                        float procent = ((float)et.Ts.TotalHours / totalHours) * 100;
+                        float angle = (360 * procent) / 100;
+
+                        Pen pen = new Pen(colors[i]);
+                        SolidBrush solidBrush = new SolidBrush(colors[i]);
+                        SolidBrush blackBrush = new SolidBrush(Color.Black);
+                        Rectangle rectPie = new Rectangle(100, 100, 300, 300);
+                        Rectangle rectLegend = new Rectangle(rectLegendX, rectLegendY, 25, 10);
+                        graphics.DrawArc(pen, rectPie, movingAngle, angle);
+                        graphics.FillPie(solidBrush, rectPie, movingAngle, angle);
+                        graphics.DrawRectangle(pen, rectLegend);
+                        graphics.FillRectangle(solidBrush, rectLegend);
+                        PointF pointF = new PointF(rectLegendX + 35, rectLegendY);
+                        graphics.DrawString(et.Name, arial, blackBrush, pointF);
+                        i++;
+                        movingAngle += angle;
+                        rectLegendY += 30;
+                    }
+
+                    image.Save(pathPNG);
+
+                    graphics.Dispose();
+                    image.Dispose();
 
                 }
                 return View();
